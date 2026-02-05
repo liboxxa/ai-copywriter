@@ -18,7 +18,7 @@ export function DropdownMenu({
   children,
 }: {
   children: React.ReactNode;
-}): JSX.Element {
+}): React.JSX.Element {
   const [open, setOpen] = React.useState(false);
 
   return (
@@ -37,7 +37,7 @@ export function DropdownMenuTrigger({
 }: {
   children: React.ReactElement;
   "aria-label"?: string;
-}): JSX.Element {
+}): React.JSX.Element {
   const ctx = React.useContext(DropdownMenuContext);
 
   if (!ctx) {
@@ -51,10 +51,10 @@ export function DropdownMenuTrigger({
     "aria-expanded": open,
     "aria-label": ariaLabel,
     onClick: (event: React.MouseEvent) => {
-      children.props.onClick?.(event);
+      (children as any).props.onClick?.(event);
       setOpen(!open);
     },
-  });
+  }as any);
 }
 
 /**
@@ -66,7 +66,7 @@ export function DropdownMenuContent({
 }: {
   className?: string;
   children: React.ReactNode;
-}): JSX.Element | null {
+}): React.JSX.Element | null {
   const ctx = React.useContext(DropdownMenuContext);
 
   if (!ctx || !ctx.open) return null;
@@ -95,7 +95,7 @@ export function DropdownMenuItem({
   className?: string;
   children: React.ReactNode;
   onSelect?: () => void;
-}): JSX.Element {
+}): React.JSX.Element {
   const ctx = React.useContext(DropdownMenuContext);
 
   const handleSelect = (): void => {
