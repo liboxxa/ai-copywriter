@@ -1,0 +1,33 @@
+// prisma/schema.prisma
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// 用户订阅表：核心 SaaS 逻辑
+// 对应 JD：SaaS 基础设施、多租户架构
+model UserSubscription {
+  id               String   @id @default(cuid())
+  userId           String   @unique // 这是一个关键字段，将与 Clerk 的 User ID 绑定
+  usageCount       Int      @default(0) // 已使用次数
+  maxUsage         Int      @default(3) // 每日免费额度
+  isPro            Boolean  @default(false) // 是否付费会员
+  stripeCustomerId String?  @unique @map(name: "stripe_customer_id") // Stripe 客户ID
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @updatedAt
+}
+
+// 营销文案历史表
+// 对应 JD：数据库设计
+model MarketingCopy {
+  id        String   @id @default(cuid())
+  userId    String
+  prompt    String   // 用户输入的关键词
+  content   String   @db.Text // AI 生成的结果
+  createdAt DateTime @default(now())
+}
